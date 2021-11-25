@@ -9,7 +9,7 @@ import theme from "./styles/theme";
 import { GlobalStyles } from "./styles/styles";
 
 // import userImage from "./images/bmw.png";
-import userImage from "./images/UI-Lovecraft.jpg";
+import userImage from "./images2/UI-Lovecraft.jpg";
 // import userImage from "./images/UI-Goethe.jpg";
 // const userImage = 'https://konvajs.github.io/assets/yoda.jpg';
 
