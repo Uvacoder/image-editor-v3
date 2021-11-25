@@ -8,21 +8,18 @@ import rotateLeftIcon from "../images2/icons/rotate-left.svg";
 import rotateRightIcon from "../images2/icons/rotate-right.svg";
 import Button from "../components/Button";
 import Typography from "../components/Typography";
-import { invertMask } from "../actions/images";
+import { centerZoom, invertMask } from "../actions/images";
 import KonvaImage from "./KonvaImage";
 
 const USER_IMAGE_LAYER = {
   width: 544,
-  height: 543
-  // width: 1162,
-  // height: 1155,
+  height: 543,
+  rotation: 0
 };
 
 const MASK_LAYER = {
   width: 544,
   height: 543,
-  // width: 1162,
-  // height: 1155,
   left: 0,
   right: 0
 };
@@ -63,6 +60,7 @@ const ImageEditor = ({ image }) => {
     }
   }, [complete, imageMask]);
 
+  // center and zoom the image by default
   useEffect(() => {
     if (!image) return;
     const containerWidth = maskLayerRef.current
@@ -165,6 +163,22 @@ const ImageEditor = ({ image }) => {
     // limit the min and max zoom
     if (ratio < minZoomRef.current || ratio > maxZoomRef.current) return;
     setZoom(ratio);
+
+    // center zoom
+    let oldZoom;
+    if (oldScaleX > oldScaleY) {
+      oldZoom = oldScaleX;
+    } else {
+      oldZoom = oldScaleY;
+    }
+    const imageNode = imageRef.current;
+
+    const { x, y } = centerZoom({
+      container: maskLayerRef.current || USER_IMAGE_LAYER,
+      oldZoom,
+      newZoom: zoom,
+      imageNode
+    });
   };
 
   const onZoomMinus = () => {
@@ -231,7 +245,6 @@ const ImageEditor = ({ image }) => {
               left={values.imageLeft}
               top={values.imageTop}
               onDragEnd={onDragEnd}
-              zoom={zoom}
               onMouseEnter={onMouseEnter}
               onMouseLeave={onMouseLeave}
               rotation={values.rotation}
@@ -267,15 +280,6 @@ const ImageEditor = ({ image }) => {
               <Button onClick={onZoomMinus}>-</Button>
               <Button onClick={onZoomPlus}>+</Button>
             </Space>
-            {/* <Slider
-              step={zoomStepRef.current}
-              onChange={onZoomButton}
-              defaultValue={minZoomRef.current}
-              value={zoom}
-              min={minZoomRef.current}
-              max={maxZoomRef.current}
-              tooltipVisible={false}
-            /> */}
           </div>
           {/* ------- rotation -------  */}
           <div className="flexColumn">
