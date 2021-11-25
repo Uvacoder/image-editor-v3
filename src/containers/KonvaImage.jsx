@@ -72,8 +72,6 @@ const KonvaImage = forwardRef(
         // so need to re-translate it to { container.width/2, container.height/2 }
         // see: https://konvajs.org/docs/posts/Position_vs_Offset.html
         // the zoom shift the position to left and top, so need to adjust it to center the image
-        // x={originLeftRef.current}
-        // y={originTopRef.current}
         x={originLeftRef.current}
         y={originTopRef.current}
         draggable
