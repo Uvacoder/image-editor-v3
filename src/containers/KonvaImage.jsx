@@ -49,7 +49,6 @@ const KonvaImage = forwardRef(
         onMouseEnter={onMouseEnter}
         onMouseLeave={onMouseLeave}
         alt="user"
-        // the new origin  is the center of the container
         rotation={rotation}
       />
     );
