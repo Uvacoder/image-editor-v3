@@ -162,6 +162,7 @@ const ImageEditor = ({ image }) => {
     // ------------------------------- //
     // ------ center the zoom -------- //
     // ------------------------------- //
+    // TODO: pass the new x and y to KonvaImage
     let oldZoom;
     if (oldScaleX > oldScaleY) {
       oldZoom = oldScaleX;
