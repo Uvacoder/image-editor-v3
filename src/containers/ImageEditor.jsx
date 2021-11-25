@@ -116,8 +116,6 @@ const ImageEditor = ({ image }) => {
       ...values,
       rotation: values.rotation + 10
     });
-
-    // onChange(rotation, 'rotation');
   };
 
   const onDragEnd = (e) => {
@@ -129,9 +127,6 @@ const ImageEditor = ({ image }) => {
       imageLeft: x,
       imageRight: y
     });
-
-    // onChange(x, 'imageLeft');
-    // onChange(y, 'imageTop');
   };
 
   // zoom on wheel
@@ -164,7 +159,9 @@ const ImageEditor = ({ image }) => {
     if (ratio < minZoomRef.current || ratio > maxZoomRef.current) return;
     setZoom(ratio);
 
-    // center zoom
+    // ------------------------------- //
+    // ------ center the zoom -------- //
+    // ------------------------------- //
     let oldZoom;
     if (oldScaleX > oldScaleY) {
       oldZoom = oldScaleX;
