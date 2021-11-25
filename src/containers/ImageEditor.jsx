@@ -159,10 +159,6 @@ const ImageEditor = ({ image }) => {
     if (ratio < minZoomRef.current || ratio > maxZoomRef.current) return;
     setZoom(ratio);
 
-    // ------------------------------- //
-    // ------ center the zoom -------- //
-    // ------------------------------- //
-    // TODO: pass the new x and y to KonvaImage
     let oldZoom;
     if (oldScaleX > oldScaleY) {
       oldZoom = oldScaleX;
@@ -171,6 +167,10 @@ const ImageEditor = ({ image }) => {
     }
     const imageNode = imageRef.current;
 
+    // ------------------------------- //
+    // ------ center the zoom -------- //
+    // ------------------------------- //
+    // TODO: pass the new x and y to KonvaImage
     const { x, y } = centerZoom({
       container: maskLayerRef.current || USER_IMAGE_LAYER,
       oldZoom,
