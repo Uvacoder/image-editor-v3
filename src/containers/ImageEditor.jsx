@@ -3,7 +3,7 @@ import { Stage, Layer, Image } from "react-konva";
 import useImage from "use-image";
 
 import { Space } from "antd";
-import mask from "../images/mask-set-table.png";
+import mask from "../images2/mask-set-table.png";
 import rotateLeftIcon from "../images/icons/rotate-left.svg";
 import rotateRightIcon from "../images/icons/rotate-right.svg";
 import Button from "../components/Button";
@@ -165,25 +165,6 @@ const ImageEditor = ({ image }) => {
     // limit the min and max zoom
     if (ratio < minZoomRef.current || ratio > maxZoomRef.current) return;
     setZoom(ratio);
-
-    // const imageNode = imageRef.current;
-
-    // const container = maskLayerRef.current || layer;
-    // const { x, y } = centerZoom({
-    //   container,
-    //   oldZoom: zoom,
-    //   newZoom: ratio,
-    //   imageNode,
-    // });
-    // setZoom(ratio);
-
-    // setValues({
-    //   ...values,
-    //   imageTop
-    // })
-
-    // onChange(imageWidth, 'imageWidth');
-    // onChange(imageHeight, 'imageHeight');
   };
 
   const onZoomMinus = () => {
