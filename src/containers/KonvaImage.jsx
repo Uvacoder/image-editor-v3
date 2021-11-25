@@ -29,7 +29,7 @@ const KonvaImage = forwardRef(
     useEffect(() => {
       originLeftRef.current = container.width / 2;
       originTopRef.current = container.height / 2;
-    }, [rotation]);
+    }, []);
 
     return (
       <Image
