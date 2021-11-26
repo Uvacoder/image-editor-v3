@@ -258,7 +258,6 @@ const ImageEditor = ({ image }) => {
               zoomStepRef={zoomStepRef}
               imageWidth={values.imageWidth}
               imageHeight={values.imageHeight}
-              zoom={zoom}
             />
             {/* --------- mask ---------  */}
             {maskLayerRef.current && (
