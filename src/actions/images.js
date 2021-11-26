@@ -53,14 +53,14 @@ export const centerZoom = ({ container, image, scale, left, top }) => {
   const x = -(zoomedImageWidth - containerWidth) / 2;
   const y = -(zoomedImageHeight - containerHeight) / 2;
 
-  const pointTop = {
+  const pointTo = {
     x: x + left,
     y: y + top
   };
 
   return {
-    x: pointTop.x,
-    y: pointTop.y
+    x: pointTo.x,
+    y: pointTo.y
   };
 };
 
