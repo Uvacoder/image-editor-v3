@@ -36,7 +36,6 @@ export const centerZoom2 = ({ container, oldZoom, newZoom, imageNode }) => {
   const x = (containerWidth / 2 / newZoom - mousePointTo.x) * newZoom;
   const y = (containerHeight / 2 / newZoom - mousePointTo.y) * newZoom;
 
-  console.log({ x });
   return {
     x,
     y
@@ -58,8 +57,6 @@ export const centerZoom = ({ container, image, scale, left, top }) => {
     x: x + left,
     y: y + top
   };
-
-  console.log("pointTop", pointTop);
 
   return {
     x: pointTop.x,
