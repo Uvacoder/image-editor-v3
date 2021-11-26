@@ -4,8 +4,8 @@ import useImage from "use-image";
 
 import { Space } from "antd";
 import mask from "../images2/mask-set-table.png";
-import rotateLeftIcon from "../images2/icons/rotate-left.svg";
-import rotateRightIcon from "../images2/icons/rotate-right.svg";
+import rotateLeftIcon from "../images2/rotate-left.svg";
+import rotateRightIcon from "../images2/rotate-right.svg";
 import Button from "../components/Button";
 import Typography from "../components/Typography";
 import { centerZoom, invertMask } from "../actions/images";
@@ -169,6 +169,7 @@ const ImageEditor = ({ image }) => {
   };
 
   const onZoomMinus = () => {
+    if (!image) return;
     const oldScaleX = values.imageWidth / image.naturalWidth;
     const oldScaleY = values.imageHeight / image.naturalHeight;
 
@@ -195,6 +196,8 @@ const ImageEditor = ({ image }) => {
   };
 
   const onZoomPlus = () => {
+    if (!image) return;
+
     const oldScaleX = values.imageWidth / image.naturalWidth;
     const oldScaleY = values.imageHeight / image.naturalHeight;
 
