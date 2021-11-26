@@ -19,7 +19,8 @@ const KonvaImage = forwardRef(
       onMouseLeave,
       container,
       imageWidth,
-      imageHeight
+      imageHeight,
+      konvaPosition
     },
     ref
   ) => {
@@ -35,8 +36,8 @@ const KonvaImage = forwardRef(
       <Image
         ref={ref}
         image={image}
-        offsetX={originLeftRef.current}
-        offsetY={originTopRef.current}
+        offsetX={-konvaPosition.x + originLeftRef.current}
+        offsetY={-konvaPosition.y + originTopRef.current}
         // with offset, the image is translated at { -container.width/2, -container.height/2 } in the parent stage
         // so need to re-translate it to { container.width/2, container.height/2 }
         // see: https://konvajs.org/docs/posts/Position_vs_Offset.html

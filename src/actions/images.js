@@ -24,7 +24,7 @@ export const invertMask = (image) => {
   return canvas;
 };
 
-export const centerZoom = ({ container, oldZoom, newZoom, imageNode }) => {
+export const centerZoom2 = ({ container, oldZoom, newZoom, imageNode }) => {
   const containerWidth = container.width;
   const containerHeight = container.height;
 
@@ -36,9 +36,34 @@ export const centerZoom = ({ container, oldZoom, newZoom, imageNode }) => {
   const x = (containerWidth / 2 / newZoom - mousePointTo.x) * newZoom;
   const y = (containerHeight / 2 / newZoom - mousePointTo.y) * newZoom;
 
+  console.log({ x });
   return {
     x,
     y
+  };
+};
+
+export const centerZoom = ({ container, image, scale, left, top }) => {
+  const containerWidth = container.width;
+  const containerHeight = container.height;
+
+  const zoomedImageWidth = image.naturalWidth * scale.x;
+  const zoomedImageHeight = image.naturalHeight * scale.y;
+
+  // difference between zoomed image and container
+  const x = -(zoomedImageWidth - containerWidth) / 2;
+  const y = -(zoomedImageHeight - containerHeight) / 2;
+
+  const pointTop = {
+    x: x + left,
+    y: y + top
+  };
+
+  console.log("pointTop", pointTop);
+
+  return {
+    x: pointTop.x,
+    y: pointTop.y
   };
 };
 

@@ -14,7 +14,9 @@ import KonvaImage from "./KonvaImage";
 const USER_IMAGE_LAYER = {
   width: 544,
   height: 543,
-  rotation: 0
+  rotation: 0,
+  imageLeft: 0,
+  imageTop: 0
 };
 
 const MASK_LAYER = {
@@ -30,6 +32,7 @@ const ImageEditor = ({ image }) => {
   const invertedMaskRef = useRef();
   const imageRef = useRef();
   const stageRef = useRef();
+  const konvaPositionRef = useRef({ x: 0, y: 0 });
 
   const [imageMask] = useImage(mask, "Anonymous");
 
@@ -72,8 +75,12 @@ const ImageEditor = ({ image }) => {
 
     const scaleX = containerWidth / image.naturalWidth;
     const scaleY = containerHeight / image.naturalHeight;
+    const scale = {
+      x: containerWidth / image.naturalWidth,
+      y: containerHeight / image.naturalHeight
+    };
 
-    if (scaleX > scaleY) {
+    if (scale.x > scale.y) {
       minZoomRef.current = scaleX;
       maxZoomRef.current = scaleX * 2;
       zoomStepRef.current = scaleX / 10;
@@ -83,23 +90,9 @@ const ImageEditor = ({ image }) => {
       zoomStepRef.current = scaleY / 10;
     }
 
-    let scale;
-
-    if (scaleX > scaleY) {
-      scale = scaleX;
-    } else {
-      scale = scaleY;
-    }
-
-    setZoom(scale);
+    const ratio = Math.max(scale.x, scale.y);
+    setZoom(ratio);
   }, [image, maskLayerRef]);
-
-  const onRotateLeft = () => {
-    setValues({
-      ...values,
-      rotation: values.rotation - 10
-    });
-  };
 
   // update automatically the values when the zoom is changing
   useEffect(() => {
@@ -110,6 +103,13 @@ const ImageEditor = ({ image }) => {
       imageHeight: Math.round(image.naturalHeight * zoom)
     });
   }, [zoom]);
+
+  const onRotateLeft = () => {
+    setValues({
+      ...values,
+      rotation: values.rotation - 10
+    });
+  };
 
   const onRotateRight = () => {
     setValues({
@@ -125,7 +125,7 @@ const ImageEditor = ({ image }) => {
     setValues({
       ...values,
       imageLeft: x,
-      imageRight: y
+      imageTop: y
     });
   };
 
@@ -137,35 +137,21 @@ const ImageEditor = ({ image }) => {
     const oldScaleY = values.imageHeight / image.naturalHeight;
 
     // wheel up = zoom+, wheel down = zoom-
-    const scaleX =
-      e.evt.deltaY < 0
-        ? oldScaleX + zoomStepRef.current
-        : oldScaleX - zoomStepRef.current;
+    const scale = {};
 
-    const scaleY =
-      e.evt.deltaY < 0
-        ? oldScaleY + zoomStepRef.current
-        : oldScaleY - zoomStepRef.current;
-
-    let ratio;
-
-    if (scaleX > scaleY) {
-      ratio = scaleX;
+    if (e.evt.deltaY < 0) {
+      scale.x = oldScaleX + zoomStepRef.current;
+      scale.y = oldScaleY + zoomStepRef.current;
     } else {
-      ratio = scaleY;
+      scale.x = oldScaleX - zoomStepRef.current;
+      scale.y = oldScaleY - zoomStepRef.current;
     }
+
+    const ratio = Math.max(scale.x, scale.y);
 
     // limit the min and max zoom
     if (ratio < minZoomRef.current || ratio > maxZoomRef.current) return;
     setZoom(ratio);
-
-    let oldZoom;
-    if (oldScaleX > oldScaleY) {
-      oldZoom = oldScaleX;
-    } else {
-      oldZoom = oldScaleY;
-    }
-    const imageNode = imageRef.current;
 
     // ------------------------------- //
     // ------ center the zoom -------- //
@@ -173,47 +159,65 @@ const ImageEditor = ({ image }) => {
     // TODO: pass the new x and y to KonvaImage
     const { x, y } = centerZoom({
       container: maskLayerRef.current || USER_IMAGE_LAYER,
-      oldZoom,
-      newZoom: zoom,
-      imageNode
+      scale,
+      image,
+      left: values.imageLeft,
+      top: values.imageTop
     });
+
+    konvaPositionRef.current = { x, y };
   };
 
   const onZoomMinus = () => {
     const oldScaleX = values.imageWidth / image.naturalWidth;
     const oldScaleY = values.imageHeight / image.naturalHeight;
-    const scaleX = oldScaleX - zoomStepRef.current;
-    const scaleY = oldScaleY - zoomStepRef.current;
 
-    let ratio;
-    if (scaleX > scaleY) {
-      ratio = scaleX;
-    } else {
-      ratio = scaleY;
-    }
+    const scale = {
+      x: oldScaleX - zoomStepRef.current,
+      y: oldScaleY - zoomStepRef.current
+    };
+
+    const ratio = Math.max(scale.x, scale.y);
 
     // limit min zoom
     if (ratio < minZoomRef.current) return;
     setZoom((prev) => prev - zoomStepRef.current);
+
+    const { x, y } = centerZoom({
+      container: maskLayerRef.current || USER_IMAGE_LAYER,
+      scale,
+      image,
+      left: values.imageLeft,
+      top: values.imageTop
+    });
+
+    konvaPositionRef.current = { x, y };
   };
 
   const onZoomPlus = () => {
     const oldScaleX = values.imageWidth / image.naturalWidth;
     const oldScaleY = values.imageHeight / image.naturalHeight;
-    const scaleX = oldScaleX + zoomStepRef.current;
-    const scaleY = oldScaleY + zoomStepRef.current;
 
-    let ratio;
-    if (scaleX > scaleY) {
-      ratio = scaleX;
-    } else {
-      ratio = scaleY;
-    }
+    const scale = {
+      x: oldScaleX + zoomStepRef.current,
+      y: oldScaleY + zoomStepRef.current
+    };
+
+    const ratio = Math.max(scale.x, scale.y);
 
     // limit max zoom
     if (ratio > maxZoomRef.current) return;
-
     setZoom((prev) => prev + zoomStepRef.current);
+
+    const { x, y } = centerZoom({
+      container: maskLayerRef.current || USER_IMAGE_LAYER,
+      scale,
+      image,
+      left: values.imageLeft,
+      top: values.imageTop
+    });
+
+    konvaPositionRef.current = { x, y };
   };
 
   const onMouseEnter = (event) => {
@@ -224,7 +228,7 @@ const ImageEditor = ({ image }) => {
   };
 
   return (
-    <div className="flexCenter stretchSelf">
+    <div className="flexCenter stretchSelf p-y-20">
       <div className="flexCenter">
         <Stage
           ref={stageRef}
@@ -238,6 +242,7 @@ const ImageEditor = ({ image }) => {
           <Layer>
             {/* --------- user image ---------  */}
             <KonvaImage
+              konvaPosition={konvaPositionRef.current}
               ref={imageRef}
               image={image}
               left={values.imageLeft}
@@ -250,6 +255,7 @@ const ImageEditor = ({ image }) => {
               zoomStepRef={zoomStepRef}
               imageWidth={values.imageWidth}
               imageHeight={values.imageHeight}
+              zoom={zoom}
             />
             {/* --------- mask ---------  */}
             {maskLayerRef.current && (
@@ -268,7 +274,7 @@ const ImageEditor = ({ image }) => {
           </Layer>
         </Stage>
       </div>
-      <div className="flexCenter stretchSelf">
+      <div className="flexCenter stretchSelf m-t-20">
         <Space className="flexCenter" size={30}>
           <div className="flexColumn">
             <div className="m-b-5 stretchSelf flexCenter">
